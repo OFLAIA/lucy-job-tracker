@@ -1,4 +1,23 @@
 {
   "_comment": "Tracks every job we've already shown Lucy so we don't re-alert. Keyed by stable job_id (URL hash).",
-  "jobs": {}
+  "jobs": {
+    "d95506e9876b1341": {
+      "title": "Investment Research - Expert",
+      "company": "Marsh",
+      "first_seen": "2026-05-01T21:11:18.061156+00:00",
+      "last_seen": "2026-05-01T21:11:18.061156+00:00"
+    },
+    "c40b837cc72cff44": {
+      "title": "Internal Communications Channels and Content Coordinator – Marsh UK",
+      "company": "Marsh",
+      "first_seen": "2026-05-01T21:11:18.061156+00:00",
+      "last_seen": "2026-05-01T21:11:18.061156+00:00"
+    },
+    "4678f8dc55538ae4": {
+      "title": "Full-Stack Engineer (Forward Deployed) - Digital Client Experience  - Marsh",
+      "company": "Marsh",
+      "first_seen": "2026-05-01T21:11:18.061156+00:00",
+      "last_seen": "2026-05-01T21:11:18.061156+00:00"
+    }
+  }
 }
