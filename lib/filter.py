@@ -1,10 +1,12 @@
-"""Pre-AI filtering: date, location, hard exclusions.
+"""Pre-AI filtering: date, location, role relevance, hard exclusions.
 
-Three stages, run in order:
-  1. by_date         - drop anything older than the lookback window
-  2. by_location     - keep only London/Essex (or remote-UK)
-  3. hard_exclusions - drop anything explicitly requiring experience or
-                       senior qualifications (saves AI tokens, removes noise)
+Four stages, run in order:
+  1. by_date           - drop anything older than the lookback window
+  2. by_location       - keep only London/Essex (or remote-UK)
+  3. by_role_relevance - drop obviously off-topic titles (developer, designer,
+                         lawyer etc.) so they never appear in Set Aside
+  4. hard_exclusions   - drop anything explicitly requiring experience or
+                         senior qualifications (saves AI tokens, removes noise)
 
 Stage order matters: cheap regex filters run before AI scoring.
 """
@@ -90,6 +92,39 @@ def by_location(
         if not loc or any(x in loc for x in inc_lower):
             out.append(j)
     LOG.info("Location filter: kept %d/%d", len(out), len(jobs))
+    return out
+
+
+# --- role relevance ----------------------------------------------------------
+
+def by_role_relevance(
+    jobs: list[dict[str, Any]],
+    anti_keywords: list[str],
+) -> list[dict[str, Any]]:
+    """Drop jobs whose title contains an off-topic anti_keyword.
+
+    This runs before hard_exclusions, so dropped jobs never appear in the
+    Set Aside section of the email - they're filtered out silently.
+
+    Match is case-insensitive substring on the title field. We don't look
+    at the description here on purpose: a software engineer role is a
+    software engineer role regardless of what the description says.
+    """
+    anti_lower = [s.lower() for s in anti_keywords]
+    out: list[dict[str, Any]] = []
+    dropped: list[tuple[str, str]] = []
+    for j in jobs:
+        title = (j.get("title") or "").lower()
+        hit = next((kw for kw in anti_lower if kw in title), None)
+        if hit:
+            dropped.append((j.get("title", ""), hit))
+        else:
+            out.append(j)
+    if dropped:
+        LOG.info("Role-relevance filter dropped %d off-topic roles:", len(dropped))
+        for t, kw in dropped[:15]:
+            LOG.info("  drop %r (matched %r)", t, kw)
+    LOG.info("Role-relevance filter: kept %d/%d", len(out), len(jobs))
     return out
 
 

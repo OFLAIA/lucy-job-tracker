@@ -92,7 +92,15 @@ def run(dry: bool = False) -> int:
         exclude=roles_cfg["locations"]["exclude"],
     )
 
-    # 4. Hard exclusions -------------------------------------------------------
+    # 4. Role-relevance pre-filter --------------------------------------------
+    # Drops obviously off-topic titles (developer, designer, lawyer, etc.)
+    # before the experience check so they don't clog up the Set Aside section.
+    all_jobs = filt.by_role_relevance(
+        all_jobs,
+        anti_keywords=roles_cfg["role_relevance"]["anti_keywords"],
+    )
+
+    # 5. Hard exclusions -------------------------------------------------------
     survivors, excluded = filt.hard_exclusions(
         all_jobs,
         experience_patterns=roles_cfg["hard_exclusions"]["experience_required_phrases"],
