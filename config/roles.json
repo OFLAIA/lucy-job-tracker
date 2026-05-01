@@ -51,9 +51,11 @@
     "_comment": "Title-only pre-filter that runs BEFORE hard_exclusions. Any title containing one of these substrings is dropped silently (does not appear in 'Set aside'). Use this for roles that are clearly off-topic regardless of seniority - software engineers, designers, lawyers, etc. Keep this list narrow: if a target role might use a word, leave it out. Match is case-insensitive substring on title only.",
     "anti_keywords": [
       "developer",
+      "engineer",
       "software engineer",
       "data engineer",
       "platform engineer",
+      "forward deployed",
       "site reliability",
       "devops",
       "machine learning",
@@ -110,6 +112,7 @@
   },
   "hard_exclusions": {
     "_comment": "If a posting's text matches any of these patterns it is filtered out before the AI scorer ever sees it. Saves Anthropic API tokens and avoids wasting Lucy's attention.",
+    "_experience_comment": "Patterns are matched against title + description with re.IGNORECASE. Use \\b word boundaries for short common words to avoid false positives ('lead' must not match 'leading' or 'leader' in any sentence describing the team).",
     "experience_required_phrases": [
       "minimum [0-9]+ years",
       "[0-9]+\\+ years",
@@ -118,11 +121,11 @@
       "previous experience required",
       "proven experience",
       "established track record",
-      "senior",
-      "manager",
-      "lead",
-      "head of",
-      "director"
+      "\\bsenior\\b",
+      "\\bmanager\\b",
+      "\\blead\\b",
+      "\\bhead of\\b",
+      "\\bdirector\\b"
     ],
     "qualification_required_phrases": [
       "ACII",

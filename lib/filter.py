@@ -97,6 +97,17 @@ def by_location(
 
 # --- role relevance ----------------------------------------------------------
 
+def _normalize_title(s: str) -> str:
+    """Normalise a title for substring matching.
+
+    Lowercases, replaces hyphens/underscores/slashes with spaces, collapses
+    consecutive whitespace. This means an anti-keyword 'full stack' matches
+    'Full-Stack', 'full_stack', 'full/stack', and 'full  stack' alike.
+    """
+    s = s.lower().replace("-", " ").replace("_", " ").replace("/", " ")
+    return " ".join(s.split())
+
+
 def by_role_relevance(
     jobs: list[dict[str, Any]],
     anti_keywords: list[str],
@@ -106,16 +117,18 @@ def by_role_relevance(
     This runs before hard_exclusions, so dropped jobs never appear in the
     Set Aside section of the email - they're filtered out silently.
 
-    Match is case-insensitive substring on the title field. We don't look
-    at the description here on purpose: a software engineer role is a
-    software engineer role regardless of what the description says.
+    Match is case-insensitive substring on the title field, with light
+    normalisation (hyphens to spaces) so 'Full-Stack Engineer' is caught
+    by an anti-keyword 'full stack'. We don't look at the description here
+    on purpose: a software engineer role is a software engineer role
+    regardless of what the description says.
     """
-    anti_lower = [s.lower() for s in anti_keywords]
+    anti_norm = [_normalize_title(s) for s in anti_keywords]
     out: list[dict[str, Any]] = []
     dropped: list[tuple[str, str]] = []
     for j in jobs:
-        title = (j.get("title") or "").lower()
-        hit = next((kw for kw in anti_lower if kw in title), None)
+        title_norm = _normalize_title(j.get("title") or "")
+        hit = next((kw for kw in anti_norm if kw in title_norm), None)
         if hit:
             dropped.append((j.get("title", ""), hit))
         else:
