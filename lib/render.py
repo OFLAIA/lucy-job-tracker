@@ -39,7 +39,7 @@ def _closing_line(match_count: int) -> str:
 
 def render_email(
     matches: list[dict[str, Any]],
-    excluded: list[dict[str, Any]],
+    considered_count: int,
     reached: list[str],
     unreachable: list[str],
     quote: dict[str, Any],
@@ -78,9 +78,8 @@ def render_email(
         closing_line=_closing_line(match_count),
         match_count=match_count,
         checked_count=len(reached) + len(unreachable),
-        excluded_count=len(excluded),
+        considered_count=considered_count,
         matches=matches,
-        excluded=excluded,
         reached_companies=reached,
         unreachable_companies=unreachable,
         quote=quote,

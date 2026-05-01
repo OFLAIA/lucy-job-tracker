@@ -92,26 +92,14 @@ def run(dry: bool = False) -> int:
         exclude=roles_cfg["locations"]["exclude"],
     )
 
-    # 4. Role-relevance pre-filter --------------------------------------------
-    # Drops obviously off-topic titles (developer, designer, lawyer, etc.)
-    # before the experience check so they don't clog up the Set Aside section.
-    all_jobs = filt.by_role_relevance(
-        all_jobs,
-        anti_keywords=roles_cfg["role_relevance"]["anti_keywords"],
-    )
+    # 4. Dedup against seen jobs ----------------------------------------------
+    # Date and location filters above are cheap and reliable. Beyond that,
+    # the AI scorer is the sole judge of relevance and entry-level - regex
+    # blacklists can never enumerate every off-topic role, so we don't try.
+    new_survivors = [j for j in all_jobs if state.is_new(j)]
+    LOG.info("After dedup: %d new postings (was %d)", len(new_survivors), len(all_jobs))
 
-    # 5. Hard exclusions -------------------------------------------------------
-    survivors, excluded = filt.hard_exclusions(
-        all_jobs,
-        experience_patterns=roles_cfg["hard_exclusions"]["experience_required_phrases"],
-        qualification_patterns=roles_cfg["hard_exclusions"]["qualification_required_phrases"],
-    )
-
-    # 5. Dedup against seen jobs ----------------------------------------------
-    new_survivors = [j for j in survivors if state.is_new(j)]
-    LOG.info("After dedup: %d new postings (was %d)", len(new_survivors), len(survivors))
-
-    # 6. AI score --------------------------------------------------------------
+    # 5. AI score --------------------------------------------------------------
     feedback = state.load_feedback()
     scored = scorer.score_all(
         new_survivors,
@@ -122,13 +110,13 @@ def run(dry: bool = False) -> int:
     matches = [j for j in scored if j.get("verdict") in ("loves_this", "worth_a_look")]
     matches.sort(key=lambda j: 0 if j["verdict"] == "loves_this" else 1)
 
-    # 7. Quote ----------------------------------------------------------------
+    # 6. Quote ----------------------------------------------------------------
     quote = quotes.pick_today()
 
-    # 8. Render ---------------------------------------------------------------
+    # 7. Render ---------------------------------------------------------------
     subject, html = render.render_email(
         matches=matches,
-        excluded=excluded,
+        considered_count=len(scored),
         reached=reached,
         unreachable=unreachable,
         quote=quote,
