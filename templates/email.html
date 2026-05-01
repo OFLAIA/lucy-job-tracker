@@ -1,0 +1,173 @@
+{# Email-safe HTML for the daily digest. Gmail/Apple Mail/iOS Mail render this fine.
+   Outlook desktop is not a target since the recipient is on Gmail.
+
+   Layout uses tables (most reliable across mail clients) and all styles are inline.
+   Web fonts are deliberately avoided - we fall back to Georgia for the editorial
+   serif moments and Arial/Helvetica everywhere else, both of which exist on every
+   device the recipient is likely to use.
+
+   Feedback buttons are mailto: links for v1 - clicking them opens the user's mail
+   client with a pre-filled subject. Replies arrive in Ian's inbox where they can
+   be processed (manually for v1, automatically once the inbound parser is wired up).
+#}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ subject }}</title>
+</head>
+<body style="margin:0;padding:0;background:#FBEAF0;font-family:Arial,Helvetica,sans-serif;">
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FBEAF0;">
+<tr><td align="center" style="padding:20px 12px;">
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;background:#ffffff;border-radius:12px;border:1px solid #f0d9e2;overflow:hidden;">
+
+<!-- Greeting band -->
+<tr><td style="background:#FAECE7;padding:28px 28px 22px;">
+  <p style="margin:0 0 6px;font-family:Georgia,serif;font-size:13px;color:#712B13;letter-spacing:0.4px;">{{ date_long }}</p>
+  <p style="margin:0 0 6px;font-family:Georgia,serif;font-size:26px;font-weight:500;color:#4A1B0C;line-height:1.2;">Good morning, {{ recipient_name }}.</p>
+  <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#712B13;line-height:1.5;">{{ intro_line }}</p>
+</td></tr>
+
+<!-- Today's quote -->
+<tr><td style="padding:20px 28px 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FBEAF0;border-radius:8px;">
+  <tr><td style="padding:18px 22px;">
+    <p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#72243E;letter-spacing:1.2px;text-transform:uppercase;">Today's note</p>
+    <p style="margin:0 0 8px;font-family:Georgia,serif;font-size:18px;font-style:italic;color:#4B1528;line-height:1.45;">&ldquo;{{ quote.text }}&rdquo;</p>
+    <p style="margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#72243E;">&mdash; {{ quote.author }}</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td style="padding-right:6px;">
+        <a href="mailto:{{ recipient_email }}?subject=%5Blucy-job-tracker%5D%20Quote%20thumbs%20up%3A%20{{ quote.id }}&amp;body=Thumbs%20up%20on%20today%27s%20quote.%20Do%20not%20edit%20the%20subject%20line." style="display:inline-block;padding:6px 14px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#72243E;text-decoration:none;background:#ffffff;border:1px solid #D4537E;border-radius:999px;">More like this</a>
+      </td>
+      <td>
+        <a href="mailto:{{ recipient_email }}?subject=%5Blucy-job-tracker%5D%20Quote%20thumbs%20down%3A%20{{ quote.id }}&amp;body=Thumbs%20down%20on%20today%27s%20quote.%20Do%20not%20edit%20the%20subject%20line." style="display:inline-block;padding:6px 14px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#5F5E5A;text-decoration:none;background:#ffffff;border:1px solid #D3D1C7;border-radius:999px;">Less like this</a>
+      </td>
+    </tr>
+    </table>
+  </td></tr>
+  </table>
+</td></tr>
+
+<!-- Stats row -->
+<tr><td style="padding:20px 28px 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td width="33%" style="padding-right:6px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FBEAF0;border-radius:8px;">
+      <tr><td style="padding:10px 14px;">
+        <p style="margin:0 0 2px;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#72243E;letter-spacing:0.8px;text-transform:uppercase;">New today</p>
+        <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:20px;font-weight:bold;color:#4B1528;">{{ match_count }} {% if match_count == 1 %}match{% else %}matches{% endif %}</p>
+      </td></tr>
+      </table>
+    </td>
+    <td width="33%" style="padding-right:6px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F1EFE8;border-radius:8px;">
+      <tr><td style="padding:10px 14px;">
+        <p style="margin:0 0 2px;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#5F5E5A;letter-spacing:0.8px;text-transform:uppercase;">Checked</p>
+        <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:20px;font-weight:bold;color:#2C2C2A;">{{ checked_count }} sites</p>
+      </td></tr>
+      </table>
+    </td>
+    <td width="33%">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F1EFE8;border-radius:8px;">
+      <tr><td style="padding:10px 14px;">
+        <p style="margin:0 0 2px;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#5F5E5A;letter-spacing:0.8px;text-transform:uppercase;">Filtered out</p>
+        <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:20px;font-weight:bold;color:#2C2C2A;">{{ excluded_count }} {% if excluded_count == 1 %}role{% else %}roles{% endif %}</p>
+      </td></tr>
+      </table>
+    </td>
+  </tr>
+  </table>
+</td></tr>
+
+<!-- Job cards -->
+{% if matches %}
+{% for job in matches %}
+<tr><td style="padding:10px 28px 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E8E5DD;border-left:3px solid {% if job.verdict == 'loves_this' %}#D4537E{% else %}#F0997B{% endif %};border-radius:8px;">
+  <tr><td style="padding:14px 18px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td style="padding-right:8px;">
+        <p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;color:#2C2C2A;">{{ job.title }}</p>
+      </td>
+      <td align="right" valign="top" style="white-space:nowrap;">
+        {% if job.verdict == 'loves_this' %}
+        <span style="display:inline-block;padding:3px 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#72243E;background:#FBEAF0;border-radius:999px;">Loves this one</span>
+        {% else %}
+        <span style="display:inline-block;padding:3px 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#712B13;background:#FAECE7;border-radius:999px;">Worth a look</span>
+        {% endif %}
+      </td>
+    </tr>
+    </table>
+    <p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#5F5E5A;">{{ job.company }} &middot; {{ job.location or 'Location not specified' }}{% if job.posted_on %} &middot; {{ job.posted_on }}{% endif %}</p>
+    <p style="margin:0 0 12px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#444441;line-height:1.55;">{{ job.verdict_reason }}</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td style="padding-right:8px;">
+        <a href="{{ job.url }}" style="display:inline-block;padding:7px 16px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#ffffff;text-decoration:none;background:#D4537E;border-radius:8px;">View &amp; apply &rarr;</a>
+      </td>
+      <td>
+        <a href="mailto:{{ recipient_email }}?subject=%5Blucy-job-tracker%5D%20Not%20a%20match%3A%20{{ job.id }}&amp;body=Marking%20as%20not%20a%20match%3A%20{{ job.title|urlencode }}%20at%20{{ job.company|urlencode }}.%20Do%20not%20edit%20the%20subject%20line." style="display:inline-block;padding:7px 14px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#5F5E5A;text-decoration:none;background:#ffffff;border:1px solid #D3D1C7;border-radius:8px;">Not a match</a>
+      </td>
+    </tr>
+    </table>
+  </td></tr>
+  </table>
+</td></tr>
+{% endfor %}
+{% else %}
+<tr><td style="padding:20px 28px 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F1EFE8;border-radius:8px;">
+  <tr><td style="padding:18px 22px;">
+    <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#5F5E5A;line-height:1.5;">No new matches today. The system is still watching {{ checked_count }} careers pages and will tell you the moment something fits.</p>
+  </td></tr>
+  </table>
+</td></tr>
+{% endif %}
+
+<!-- Set aside section -->
+{% if excluded %}
+<tr><td style="padding:20px 28px 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr><td style="border-top:1px dashed #D3D1C7;padding-top:14px;">
+    <p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:bold;color:#712B13;">Set aside today ({{ excluded|length }})</p>
+    {% for ex in excluded %}
+    <p style="margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#5F5E5A;line-height:1.6;">{{ ex.company }} &mdash; {{ ex.title }} <span style="color:#888780;">({{ ex.exclusion_reason }})</span></p>
+    {% endfor %}
+  </td></tr>
+  </table>
+</td></tr>
+{% endif %}
+
+<!-- Coverage summary -->
+<tr><td style="padding:20px 28px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F1EFE8;border-radius:8px;">
+  <tr><td style="padding:12px 16px;">
+    <p style="margin:0 0 6px;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;color:#444441;">Coverage</p>
+    <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#5F5E5A;line-height:1.5;">Reached: {{ reached_companies|join(', ') }}{% if unreachable_companies %} &middot; Couldn't reach: {{ unreachable_companies|join(', ') }}{% endif %}</p>
+  </td></tr>
+  </table>
+</td></tr>
+
+<!-- Footer / encouragement -->
+<tr><td style="padding:0 28px 28px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FAECE7;border-radius:8px;">
+  <tr><td style="padding:14px 18px;">
+    <p style="margin:0 0 6px;font-family:Georgia,serif;font-size:14px;color:#4A1B0C;line-height:1.5;">{{ closing_line }}</p>
+    <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#712B13;line-height:1.6;">Tomorrow's digest arrives at 7am.</p>
+  </td></tr>
+  </table>
+</td></tr>
+
+</table>
+
+</td></tr>
+</table>
+
+</body>
+</html>

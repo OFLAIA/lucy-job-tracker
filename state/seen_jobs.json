@@ -1,0 +1,4 @@
+{
+  "_comment": "Tracks every job we've already shown Lucy so we don't re-alert. Keyed by stable job_id (URL hash).",
+  "jobs": {}
+}

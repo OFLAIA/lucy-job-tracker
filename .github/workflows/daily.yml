@@ -1,0 +1,63 @@
+# Runs the daily job digest at 6am UTC.
+# - In summer (BST, late Mar - late Oct) that lands at 7am UK time.
+# - In winter (GMT, late Oct - late Mar) it lands at 6am UK time.
+# Most of the year is BST, so 6am UTC keeps the 7am UK target for ~7 months.
+# If you want it pinned to 7am UK year-round, switch to a self-hosted scheduler.
+#
+# The 'workflow_dispatch' trigger gives you a manual "Run now" button on
+# the Actions tab, useful for the first test run and any time you want to
+# kick off an unscheduled check.
+name: Daily job digest
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  # The job needs to push state file updates (seen_jobs.json, feedback.json,
+  # quote_history.json) back to the repo so memory persists across runs.
+  contents: write
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run digest
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LUCY_EMAIL: ${{ secrets.LUCY_EMAIL }}
+          LUCY_NAME: ${{ secrets.LUCY_NAME }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+          RECIPIENT_NAME: ${{ secrets.RECIPIENT_NAME }}
+          TIMEZONE: Europe/London
+        run: python main.py
+
+      - name: Commit updated state files
+        # Even if the job had no new matches, the run typically updates
+        # quote_history.json. Skip the commit cleanly if nothing changed.
+        run: |
+          git config user.name "Lucy Job Tracker Bot"
+          git config user.email "bot@lucy-job-tracker.local"
+          git add state/ || true
+          if git diff --staged --quiet; then
+            echo "No state changes to commit."
+          else
+            git commit -m "State update from daily run $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            git push
+          fi

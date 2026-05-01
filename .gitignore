@@ -1,0 +1,21 @@
+# Never commit secrets
+.env
+.env.local
+*.key
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# State files (these will be tracked, but not local debug copies)
+state/*.local.json
+state/debug/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store

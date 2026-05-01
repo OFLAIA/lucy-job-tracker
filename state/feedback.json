@@ -1,0 +1,16 @@
+{
+  "_comment": "Lucy's feedback over time. Negative job patterns are passed to the AI scorer as 'don't surface anything like these'. Quote thumbs tune the daily quote picker.",
+  "rejected_jobs": [],
+  "loved_jobs": [],
+  "quote_thumbs_up": [],
+  "quote_thumbs_down": [],
+  "tone_weights": {
+    "gentle": 1.0,
+    "sharp": 1.0,
+    "encouraging": 1.0,
+    "philosophical": 1.0,
+    "practical": 1.0,
+    "punchy": 1.0,
+    "grounded": 1.0
+  }
+}

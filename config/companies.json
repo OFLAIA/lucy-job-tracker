@@ -1,0 +1,103 @@
+{
+  "_comment": "Each entry: name, the careers URL Lucy or a recruiter would visit, and the scraper adaptor. ats_config holds the parameters that adaptor needs (e.g. Workday tenant + site). Fields marked TBD will be confirmed by live verification before scraper runs.",
+  "companies": [
+    {
+      "name": "Willis Towers Watson",
+      "short": "WTW",
+      "human_url": "https://careers.wtwco.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "wtwco", "site": "Careers", "wd_domain": "wd3.myworkdayjobs.com" },
+      "verified": false
+    },
+    {
+      "name": "Gallagher",
+      "short": "Gallagher",
+      "human_url": "https://careers.ajg.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "ajg", "site": "External", "wd_domain": "wd1.myworkdayjobs.com" },
+      "verified": false
+    },
+    {
+      "name": "Beazley",
+      "short": "Beazley",
+      "human_url": "https://careers.beazley.com",
+      "adaptor": "smartrecruiters",
+      "ats_config": { "company_slug": "beazley" },
+      "verified": false
+    },
+    {
+      "name": "Howden",
+      "short": "Howden",
+      "human_url": "https://www.howdengroup.com/careers",
+      "adaptor": "custom",
+      "ats_config": { "notes": "Likely bespoke site, may need HTML scrape via WebFetch" },
+      "verified": false
+    },
+    {
+      "name": "Marsh",
+      "short": "Marsh",
+      "human_url": "https://careers.marshmclennan.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "mmc", "site": "MMC", "wd_domain": "wd1.myworkdayjobs.com", "filter_company": "Marsh" },
+      "verified": false
+    },
+    {
+      "name": "Aviva",
+      "short": "Aviva",
+      "human_url": "https://careers.aviva.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "aviva", "site": "External_Careers", "wd_domain": "wd1.myworkdayjobs.com" },
+      "verified": false,
+      "notes": "Aviva also runs an early-careers site (avivaearlycareers.com) which may host apprentice-specific roles on a different platform. Worth checking separately if Workday yields nothing."
+    },
+    {
+      "name": "Chubb",
+      "short": "Chubb",
+      "human_url": "https://careers.chubb.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "chubb", "site": "Chubb_External_Career_Site", "wd_domain": "wd1.myworkdayjobs.com" },
+      "verified": false
+    },
+    {
+      "name": "SCOR",
+      "short": "SCOR",
+      "human_url": "https://careers.scor.com",
+      "adaptor": "successfactors",
+      "ats_config": { "company_slug": "scor", "notes": "May fall back to HTML scraping" },
+      "verified": false
+    },
+    {
+      "name": "Asta",
+      "short": "Asta",
+      "human_url": "https://www.astamg.com/careers",
+      "adaptor": "custom",
+      "ats_config": { "notes": "Small Lloyd's MGA, likely 0-5 listings, possibly just a 'send CV to careers@' page" },
+      "verified": false
+    },
+    {
+      "name": "AON",
+      "short": "AON",
+      "human_url": "https://jobs.aon.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "aon", "site": "External_Career_Site", "wd_domain": "wd1.myworkdayjobs.com" },
+      "verified": false
+    },
+    {
+      "name": "Aegon UK",
+      "short": "Aegon",
+      "human_url": "https://www.aegon.co.uk/careers",
+      "adaptor": "successfactors",
+      "ats_config": { "notes": "UK side may differ from group; verify before scraping" },
+      "verified": false
+    },
+    {
+      "name": "Talbot Underwriting (AIG)",
+      "short": "Talbot",
+      "human_url": "https://careers.aig.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "aig", "site": "External", "wd_domain": "wd1.myworkdayjobs.com", "filter_business_unit": "Talbot" },
+      "verified": false,
+      "notes": "Talbot is part of AIG; listings come from AIG's Workday with a Talbot filter where exposed."
+    }
+  ]
+}

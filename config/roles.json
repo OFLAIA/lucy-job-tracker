@@ -1,0 +1,92 @@
+{
+  "target_roles": {
+    "_comment": "Explicit titles Lucy is looking for. The AI scorer treats 'must_match_one' as a strong positive signal but doesn't require exact wording.",
+    "must_match_one": [
+      "Underwriting Assistant",
+      "Account Handler",
+      "Claims Trainee",
+      "Operations Trainee",
+      "Underwriting Apprentice",
+      "Trainee Broker"
+    ],
+    "_fuzzy_comment": "Broader categories the AI considers as positive matches if the title fits the spirit, even with different wording.",
+    "fuzzy_categories": [
+      "any junior insurance role",
+      "any insurance apprenticeship",
+      "any insurance graduate scheme open to school leavers",
+      "any entry-level claims handling role",
+      "any entry-level broking role",
+      "any junior risk or underwriting support role"
+    ]
+  },
+  "locations": {
+    "include": [
+      "London",
+      "Greater London",
+      "City of London",
+      "Essex",
+      "Chelmsford",
+      "Romford",
+      "Ilford",
+      "Brentwood",
+      "Basildon",
+      "Southend",
+      "Hybrid - London",
+      "Remote - UK"
+    ],
+    "exclude": [
+      "United States",
+      "USA",
+      "Singapore",
+      "Hong Kong",
+      "Bermuda",
+      "Dublin",
+      "Edinburgh",
+      "Manchester",
+      "Birmingham",
+      "Glasgow"
+    ]
+  },
+  "hard_exclusions": {
+    "_comment": "If a posting's text matches any of these patterns it is filtered out before the AI scorer ever sees it. Saves Anthropic API tokens and avoids wasting Lucy's attention.",
+    "experience_required_phrases": [
+      "minimum [0-9]+ years",
+      "[0-9]+\\+ years",
+      "at least [0-9]+ years",
+      "[0-9]+ years of experience",
+      "previous experience required",
+      "proven experience",
+      "established track record",
+      "senior",
+      "manager",
+      "lead",
+      "head of",
+      "director"
+    ],
+    "qualification_required_phrases": [
+      "ACII",
+      "Cert CII required",
+      "FCII",
+      "qualified actuary",
+      "chartered insurance",
+      "professional qualification required"
+    ]
+  },
+  "notes": {
+    "graduate_school_leaver_friendly": [
+      "no prior experience",
+      "school leaver",
+      "graduate scheme",
+      "apprenticeship",
+      "trainee",
+      "entry-level",
+      "we'll train you",
+      "full training provided"
+    ]
+  },
+  "lookback": {
+    "_comment": "First run goes wide so Lucy gets a snapshot of the live market. After that we narrow to ~last day with a small buffer in case a cron fires late. The seen_jobs dedup is the real safety net against duplicates - this filter is purely about scope.",
+    "first_run_days": 14,
+    "ongoing_days": 2
+  }
+}
