@@ -1,0 +1,297 @@
+{
+  "_comment": "Curated catalog of UK insurance employers. Mix of brokers, composite insurers, Lloyd's specialty, reinsurance, and consumer. Each entry pairs the company with its careers ATS so the scraper knows which adaptor to use. 'verified: false' means the tenant/slug is an educated guess - first run will reveal which need fixing. 'category' is informational; not used for filtering in v1.",
+  "industry": "insurance",
+  "region": "uk",
+  "companies": [
+    {
+      "name": "Willis Towers Watson",
+      "short": "WTW",
+      "human_url": "https://careers.wtwco.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "wtwco", "site": "Careers", "wd_domain": "wd3.myworkdayjobs.com" },
+      "category": "broker",
+      "verified": false
+    },
+    {
+      "name": "Gallagher",
+      "short": "Gallagher",
+      "human_url": "https://careers.ajg.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "ajg", "site": "External", "wd_domain": "wd1.myworkdayjobs.com" },
+      "category": "broker",
+      "verified": false
+    },
+    {
+      "name": "Marsh",
+      "short": "Marsh",
+      "human_url": "https://careers.marshmclennan.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "mmc", "site": "MMC", "wd_domain": "wd1.myworkdayjobs.com", "filter_company": "Marsh" },
+      "category": "broker",
+      "verified": false
+    },
+    {
+      "name": "AON",
+      "short": "AON",
+      "human_url": "https://jobs.aon.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "aon", "site": "External_Career_Site", "wd_domain": "wd1.myworkdayjobs.com" },
+      "category": "broker",
+      "verified": false
+    },
+    {
+      "name": "Lockton",
+      "short": "Lockton",
+      "human_url": "https://global.lockton.com/gb/en/careers",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "lockton", "site": "External", "wd_domain": "wd1.myworkdayjobs.com" },
+      "category": "broker",
+      "verified": false
+    },
+    {
+      "name": "Howden",
+      "short": "Howden",
+      "human_url": "https://www.howdengroup.com/careers",
+      "adaptor": "custom",
+      "ats_config": { "notes": "Bespoke careers site; HTML scrape via custom adaptor" },
+      "category": "broker",
+      "verified": false
+    },
+    {
+      "name": "Miller Insurance",
+      "short": "Miller",
+      "human_url": "https://www.miller-insurance.com/careers",
+      "adaptor": "custom",
+      "ats_config": { "notes": "Lloyd's broker, small custom site" },
+      "category": "broker",
+      "verified": false
+    },
+    {
+      "name": "Aviva",
+      "short": "Aviva",
+      "human_url": "https://careers.aviva.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "aviva", "site": "External_Careers", "wd_domain": "wd1.myworkdayjobs.com" },
+      "category": "composite",
+      "verified": false,
+      "notes": "Also runs avivaearlycareers.com for apprentice-specific roles."
+    },
+    {
+      "name": "AXA UK",
+      "short": "AXA",
+      "human_url": "https://www.axa.co.uk/about-us/careers",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "axa", "site": "AXA_External_Careers", "wd_domain": "wd3.myworkdayjobs.com" },
+      "category": "composite",
+      "verified": false
+    },
+    {
+      "name": "Zurich UK",
+      "short": "Zurich",
+      "human_url": "https://www.zurich.com/careers",
+      "adaptor": "successfactors",
+      "ats_config": { "company_slug": "zurich" },
+      "category": "composite",
+      "verified": false
+    },
+    {
+      "name": "Allianz UK",
+      "short": "Allianz",
+      "human_url": "https://www.allianz.co.uk/about-allianz/careers.html",
+      "adaptor": "successfactors",
+      "ats_config": { "company_slug": "allianz" },
+      "category": "composite",
+      "verified": false
+    },
+    {
+      "name": "RSA Insurance",
+      "short": "RSA",
+      "human_url": "https://www.rsagroup.com/about-us/careers",
+      "adaptor": "successfactors",
+      "ats_config": { "company_slug": "rsainsurance" },
+      "category": "composite",
+      "verified": false
+    },
+    {
+      "name": "QBE UK",
+      "short": "QBE",
+      "human_url": "https://careers.qbe.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "qbe", "site": "QBE_Careers", "wd_domain": "wd3.myworkdayjobs.com" },
+      "category": "composite",
+      "verified": false
+    },
+    {
+      "name": "Chubb",
+      "short": "Chubb",
+      "human_url": "https://careers.chubb.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "chubb", "site": "Chubb_External_Career_Site", "wd_domain": "wd1.myworkdayjobs.com" },
+      "category": "composite",
+      "verified": false
+    },
+    {
+      "name": "AIG UK",
+      "short": "AIG",
+      "human_url": "https://careers.aig.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "aig", "site": "External", "wd_domain": "wd1.myworkdayjobs.com" },
+      "category": "composite",
+      "verified": false
+    },
+    {
+      "name": "Beazley",
+      "short": "Beazley",
+      "human_url": "https://careers.beazley.com",
+      "adaptor": "smartrecruiters",
+      "ats_config": { "company_slug": "beazley" },
+      "category": "lloyds",
+      "verified": false
+    },
+    {
+      "name": "Hiscox",
+      "short": "Hiscox",
+      "human_url": "https://careers.hiscoxgroup.com",
+      "adaptor": "smartrecruiters",
+      "ats_config": { "company_slug": "hiscox" },
+      "category": "lloyds",
+      "verified": false
+    },
+    {
+      "name": "Lancashire Insurance",
+      "short": "Lancashire",
+      "human_url": "https://www.lancashiregroup.com/en/careers.html",
+      "adaptor": "custom",
+      "ats_config": { "notes": "Lloyd's specialty insurer, small bespoke careers page" },
+      "category": "lloyds",
+      "verified": false
+    },
+    {
+      "name": "Brit Insurance",
+      "short": "Brit",
+      "human_url": "https://britinsurance.com/careers",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "brit", "site": "External", "wd_domain": "wd3.myworkdayjobs.com" },
+      "category": "lloyds",
+      "verified": false
+    },
+    {
+      "name": "Talbot Underwriting (AIG)",
+      "short": "Talbot",
+      "human_url": "https://careers.aig.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "aig", "site": "External", "wd_domain": "wd1.myworkdayjobs.com", "filter_business_unit": "Talbot" },
+      "category": "lloyds",
+      "verified": false
+    },
+    {
+      "name": "Apollo Underwriting",
+      "short": "Apollo",
+      "human_url": "https://apollounderwriting.com/careers",
+      "adaptor": "custom",
+      "ats_config": { "notes": "Lloyd's MGA, small bespoke careers page" },
+      "category": "lloyds",
+      "verified": false
+    },
+    {
+      "name": "Convex Insurance",
+      "short": "Convex",
+      "human_url": "https://convexin.com/careers",
+      "adaptor": "custom",
+      "ats_config": { "notes": "Specialty insurer; check site for ATS" },
+      "category": "lloyds",
+      "verified": false
+    },
+    {
+      "name": "Liberty Specialty Markets",
+      "short": "Liberty",
+      "human_url": "https://www.libertyspecialtymarkets.com/careers",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "libertymutual", "site": "External", "wd_domain": "wd5.myworkdayjobs.com" },
+      "category": "lloyds",
+      "verified": false
+    },
+    {
+      "name": "Asta Managing Agency",
+      "short": "Asta",
+      "human_url": "https://www.astamg.com/careers",
+      "adaptor": "custom",
+      "ats_config": { "notes": "Small Lloyd's MGA, likely 0-5 listings" },
+      "category": "lloyds",
+      "verified": false
+    },
+    {
+      "name": "SCOR",
+      "short": "SCOR",
+      "human_url": "https://careers.scor.com",
+      "adaptor": "successfactors",
+      "ats_config": { "company_slug": "scor" },
+      "category": "reinsurance",
+      "verified": false
+    },
+    {
+      "name": "Munich Re UK",
+      "short": "Munich Re",
+      "human_url": "https://www.munichre.com/uk/en/company/careers.html",
+      "adaptor": "successfactors",
+      "ats_config": { "company_slug": "munichre" },
+      "category": "reinsurance",
+      "verified": false
+    },
+    {
+      "name": "Swiss Re UK",
+      "short": "Swiss Re",
+      "human_url": "https://careers.swissre.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "swissre", "site": "External_Careers", "wd_domain": "wd3.myworkdayjobs.com" },
+      "category": "reinsurance",
+      "verified": false
+    },
+    {
+      "name": "Direct Line Group",
+      "short": "Direct Line",
+      "human_url": "https://careers.directlinegroup.co.uk",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "directlinegroup", "site": "External", "wd_domain": "wd3.myworkdayjobs.com" },
+      "category": "consumer",
+      "verified": false
+    },
+    {
+      "name": "Admiral Group",
+      "short": "Admiral",
+      "human_url": "https://admiraljobs.co.uk",
+      "adaptor": "custom",
+      "ats_config": { "notes": "Bespoke careers site; HTML scrape via custom adaptor" },
+      "category": "consumer",
+      "verified": false
+    },
+    {
+      "name": "Aegon UK",
+      "short": "Aegon",
+      "human_url": "https://www.aegon.co.uk/careers",
+      "adaptor": "successfactors",
+      "ats_config": { "notes": "UK side may differ from group; verify" },
+      "category": "consumer",
+      "verified": false
+    },
+    {
+      "name": "NFU Mutual",
+      "short": "NFU Mutual",
+      "human_url": "https://www.nfumutual.co.uk/careers",
+      "adaptor": "custom",
+      "ats_config": { "notes": "Rural insurer with bespoke careers site" },
+      "category": "consumer",
+      "verified": false
+    },
+    {
+      "name": "Lloyd's of London (Corporation)",
+      "short": "Lloyd's",
+      "human_url": "https://careers.lloyds.com",
+      "adaptor": "workday",
+      "ats_config": { "tenant": "lloyds", "site": "External_Careers", "wd_domain": "wd3.myworkdayjobs.com" },
+      "category": "market",
+      "verified": false,
+      "notes": "The Lloyd's Corporation itself runs apprentice programmes separate from individual syndicates."
+    }
+  ]
+}

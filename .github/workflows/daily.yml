@@ -1,12 +1,18 @@
 # Runs the daily job digest at 6am UTC.
-# - In summer (BST, late Mar - late Oct) that lands at 7am UK time.
-# - In winter (GMT, late Oct - late Mar) it lands at 6am UK time.
-# Most of the year is BST, so 6am UTC keeps the 7am UK target for ~7 months.
-# If you want it pinned to 7am UK year-round, switch to a self-hosted scheduler.
 #
-# The 'workflow_dispatch' trigger gives you a manual "Run now" button on
-# the Actions tab, useful for the first test run and any time you want to
-# kick off an unscheduled check.
+# In summer (BST, late Mar - late Oct) that lands at 7am UK time.
+# In winter (GMT, late Oct - late Mar) it lands at 6am UK time.
+# Most of the year is BST, so 6am UTC keeps the 7am UK target for ~7 months.
+#
+# The 'workflow_dispatch' trigger gives a manual "Run now" button on the
+# Actions tab, useful for testing and onboarding new users.
+#
+# Multi-user pipeline (post-refactor):
+#   1. Shared scrape: hit every company in companies/*.json, cache raw results.
+#   2. Per-user loop: for each active user in users/*.json, filter cache by
+#      their preferences, AI-score, render, send.
+#   3. Commit updated state back so memory persists across runs.
+
 name: Daily job digest
 
 on:
@@ -16,7 +22,8 @@ on:
 
 permissions:
   # The job needs to push state file updates (seen_jobs.json, feedback.json,
-  # quote_history.json) back to the repo so memory persists across runs.
+  # quote_history.json, scrape_cache/*) back to the repo so memory persists
+  # across runs.
   contents: write
 
 jobs:
@@ -37,23 +44,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run digest
+      - name: Run digest for all active users
         env:
+          # API keys (shared across all users)
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          LUCY_EMAIL: ${{ secrets.LUCY_EMAIL }}
-          LUCY_NAME: ${{ secrets.LUCY_NAME }}
+          # Where 'Not a match' / quote-thumb feedback replies are routed.
+          # All users' feedback comes back here for manual processing in v1.
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
-          RECIPIENT_NAME: ${{ secrets.RECIPIENT_NAME }}
           TIMEZONE: Europe/London
         run: python main.py
 
       - name: Commit updated state files
-        # Even if the job had no new matches, the run typically updates
-        # quote_history.json. Skip the commit cleanly if nothing changed.
+        # Even if the run had no new matches for anyone, scrape_cache files
+        # and quote_history.json typically update. Skip the commit cleanly
+        # if nothing changed.
         run: |
-          git config user.name "Lucy Job Tracker Bot"
-          git config user.email "bot@lucy-job-tracker.local"
+          git config user.name "Job Tracker Bot"
+          git config user.email "bot@job-tracker.local"
           git add state/ || true
           if git diff --staged --quiet; then
             echo "No state changes to commit."

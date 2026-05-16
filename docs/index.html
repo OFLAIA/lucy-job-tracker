@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<!--
+  Signup form for the daily job digest.
+  Hosted on GitHub Pages directly from /docs in the main branch.
+
+  Form action is intentionally a placeholder ('YOUR_FORMSPREE_ENDPOINT'). To
+  make this live:
+    1. Sign up at https://formspree.io (free tier = 50 submissions/month).
+    2. Create a new form, copy its endpoint URL (looks like https://formspree.io/f/xyzabc123).
+    3. Replace 'YOUR_FORMSPREE_ENDPOINT' below with that URL.
+
+  Aesthetic deliberately matches the daily digest email - same coral / cream
+  palette, Georgia serif accents, Arial sans body. No external fonts or JS
+  frameworks.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily insurance jobs - sign up</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px 16px;
+    background: #FBEAF0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #2C2C2A;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; }
+  .card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #f0d9e2;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(74, 27, 12, 0.06);
+  }
+  .header {
+    background: #FAECE7;
+    padding: 32px 28px 24px;
+  }
+  .eyebrow {
+    font-family: Georgia, serif;
+    font-size: 13px;
+    color: #712B13;
+    letter-spacing: 0.4px;
+    margin: 0 0 6px;
+  }
+  h1 {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: #4A1B0C;
+    line-height: 1.2;
+    margin: 0 0 8px;
+  }
+  .subhead {
+    font-size: 14px;
+    color: #712B13;
+    line-height: 1.55;
+    margin: 0;
+  }
+  form { padding: 24px 28px 8px; }
+  fieldset { border: none; margin: 0 0 22px; padding: 0; }
+  legend {
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #72243E;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  label.field {
+    display: block;
+    margin-bottom: 18px;
+  }
+  label.field > span.label-text {
+    display: block;
+    font-size: 13px;
+    color: #444441;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  label.field > span.hint {
+    display: block;
+    font-size: 12px;
+    color: #888780;
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+  input[type="text"], input[type="email"], textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #E8E5DD;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    color: #2C2C2A;
+    background: #ffffff;
+    transition: border-color 0.15s ease;
+  }
+  input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+    outline: none;
+    border-color: #D4537E;
+  }
+  textarea { min-height: 70px; resize: vertical; }
+  .check-grid, .radio-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .pill {
+    display: flex;
+    align-items: center;
+    padding: 9px 12px;
+    border: 1px solid #E8E5DD;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #444441;
+    background: #ffffff;
+    transition: all 0.12s ease;
+  }
+  .pill:hover { border-color: #D4537E; color: #72243E; }
+  .pill input { margin-right: 8px; accent-color: #D4537E; }
+  .pill input:checked + span { color: #72243E; font-weight: 600; }
+  .pill:has(input:checked) {
+    background: #FBEAF0;
+    border-color: #D4537E;
+  }
+  .industry-readonly {
+    padding: 10px 12px;
+    border: 1px solid #E8E5DD;
+    border-radius: 8px;
+    background: #F1EFE8;
+    font-size: 14px;
+    color: #444441;
+  }
+  .industry-readonly small { color: #888780; display: block; margin-top: 4px; font-size: 12px; }
+  .submit-row {
+    padding: 12px 28px 28px;
+    background: #ffffff;
+  }
+  button[type="submit"] {
+    width: 100%;
+    padding: 14px 20px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    background: #D4537E;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.12s ease;
+  }
+  button[type="submit"]:hover { background: #B8456A; }
+  .footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 16px 20px;
+    font-size: 12px;
+    color: #712B13;
+    line-height: 1.6;
+  }
+  .footer a { color: #72243E; }
+  .thanks {
+    background: #FAECE7;
+    padding: 28px;
+    text-align: center;
+    color: #4A1B0C;
+    font-family: Georgia, serif;
+    font-size: 18px;
+    line-height: 1.5;
+    border-radius: 12px;
+    border: 1px solid #f0d9e2;
+    display: none;
+  }
+  .thanks.show { display: block; }
+  .thanks small {
+    display: block;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: #712B13;
+    margin-top: 12px;
+  }
+  @media (max-width: 480px) {
+    body { padding: 12px 8px; }
+    .header { padding: 24px 20px 20px; }
+    form { padding: 20px 20px 8px; }
+    .submit-row { padding: 12px 20px 24px; }
+    h1 { font-size: 24px; }
+    .check-grid, .radio-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<div class="card" id="form-card">
+  <div class="header">
+    <p class="eyebrow">Daily morning digest</p>
+    <h1>Insurance jobs, delivered with your coffee.</h1>
+    <p class="subhead">Tell us where you live and what level of role you're after. Every weekday at 7am, you'll get a short email with the live openings that fit - from a curated list of UK insurance employers.</p>
+  </div>
+
+  <form id="signup-form" action="YOUR_FORMSPREE_ENDPOINT" method="POST">
+
+    <fieldset>
+      <legend>About you</legend>
+      <label class="field">
+        <span class="label-text">First name</span>
+        <input type="text" name="name" required autocomplete="given-name" placeholder="e.g. Lucy">
+      </label>
+      <label class="field">
+        <span class="label-text">Email address</span>
+        <input type="email" name="email" required autocomplete="email" placeholder="you@example.com">
+        <span class="hint">We'll send a confirmation here. The digest arrives daily at 7am UK time.</span>
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Industry &amp; region</legend>
+      <label class="field">
+        <span class="label-text">Industry</span>
+        <div class="industry-readonly">
+          Insurance (UK)
+          <small>More industries coming soon. For now we cover ~30 UK insurance employers - brokers, composite insurers, Lloyd's syndicates, reinsurers.</small>
+        </div>
+        <input type="hidden" name="industry" value="insurance">
+        <input type="hidden" name="region" value="uk">
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Where you can work (pick all that apply)</legend>
+      <div class="check-grid">
+        <label class="pill"><input type="checkbox" name="locations" value="London" checked><span>London</span></label>
+        <label class="pill"><input type="checkbox" name="locations" value="Essex"><span>Essex</span></label>
+        <label class="pill"><input type="checkbox" name="locations" value="Birmingham"><span>Birmingham</span></label>
+        <label class="pill"><input type="checkbox" name="locations" value="Manchester"><span>Manchester</span></label>
+        <label class="pill"><input type="checkbox" name="locations" value="Leeds"><span>Leeds</span></label>
+        <label class="pill"><input type="checkbox" name="locations" value="Bristol"><span>Bristol</span></label>
+        <label class="pill"><input type="checkbox" name="locations" value="Edinburgh"><span>Edinburgh</span></label>
+        <label class="pill"><input type="checkbox" name="locations" value="Glasgow"><span>Glasgow</span></label>
+        <label class="pill"><input type="checkbox" name="locations" value="Hybrid - London"><span>Hybrid (London)</span></label>
+        <label class="pill"><input type="checkbox" name="locations" value="Remote - UK"><span>Remote (UK)</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Seniority</legend>
+      <div class="radio-grid">
+        <label class="pill"><input type="radio" name="seniority" value="school_leaver" required><span>School-leaver / apprentice</span></label>
+        <label class="pill"><input type="radio" name="seniority" value="graduate"><span>Graduate scheme</span></label>
+        <label class="pill"><input type="radio" name="seniority" value="junior"><span>Junior (1-3 yrs)</span></label>
+        <label class="pill"><input type="radio" name="seniority" value="mid"><span>Mid (3-7 yrs)</span></label>
+        <label class="pill"><input type="radio" name="seniority" value="senior"><span>Senior (7+ yrs)</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Role focus (optional)</legend>
+      <label class="field">
+        <span class="label-text">Anything in particular you're looking for?</span>
+        <textarea name="role_focus" maxlength="200" placeholder="e.g. underwriting and claims, not sales. Or 'open to anything entry-level'."></textarea>
+        <span class="hint">A short note in plain English. Helps the AI judge which roles to surface for you.</span>
+      </label>
+    </fieldset>
+
+    <input type="hidden" name="_subject" value="[job-tracker] New signup">
+  </form>
+
+  <div class="submit-row">
+    <button type="submit" form="signup-form">Send me the daily digest</button>
+  </div>
+
+</div>
+
+<div class="thanks" id="thanks">
+  Thanks - you're on the list.
+  <small>You'll get a confirmation email within a day, and your first daily digest the morning after that. Check your spam folder for the first one and mark it as Not Spam.</small>
+</div>
+
+<p class="footer">
+  This is a small, free, friends-and-family tool. We don't share your email with anyone. You can pause or stop at any time by replying to a digest with the subject &ldquo;pause&rdquo; or &ldquo;stop&rdquo;.
+</p>
+
+</div>
+
+<script>
+  // Intercept submit to show the inline thanks message instead of bouncing
+  // through Formspree's default redirect. Falls back to normal POST if JS
+  // is disabled or the form has no Formspree endpoint configured yet.
+  document.getElementById('signup-form').addEventListener('submit', function(e) {
+    var form = e.target;
+    if (form.action.indexOf('YOUR_FORMSPREE_ENDPOINT') !== -1) {
+      // Not configured yet - let it submit normally so the user sees the error.
+      return;
+    }
+    e.preventDefault();
+    var btn = form.parentElement.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    }).then(function(res) {
+      if (res.ok) {
+        document.getElementById('form-card').style.display = 'none';
+        document.getElementById('thanks').classList.add('show');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Send me the daily digest';
+        alert('Hmm, something went wrong. Please try again in a moment.');
+      }
+    }).catch(function() {
+      btn.disabled = false;
+      btn.textContent = 'Send me the daily digest';
+      alert('Network problem. Please check your connection and try again.');
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,197 +1,200 @@
-# Lucy's Job Tracker
+# Job Tracker
 
-A small, private system that checks 12 insurance careers pages every morning, filters for genuinely entry-level UK roles, and emails Lucy a short, warm digest at 7am UK time.
+A self-serve daily job digest for friends and family. Users sign up via a small web form, pick their industry/region/seniority/locations, and receive a warm morning email with the live entry-level (or whatever-level) roles that fit, scored by AI.
 
-It also includes a motivational quote each morning with thumbs up/down feedback so the tone gets better over time.
+Currently covers one industry-region catalog: **Insurance, UK** (32 companies — brokers, composite insurers, Lloyd's syndicates, reinsurers).
 
 ## How it works
 
 ```
-GitHub Actions cron (06:00 UTC = 07:00 UK in BST)
-    -> python main.py
-        1. Scrape 12 careers pages
-        2. Filter by date (14 days first run, ~2 days after)
-        3. Filter by location (London / Essex / hybrid / remote-UK)
-        4. Drop anything requiring prior experience or a degree
-        5. Drop anything we have already shown Lucy
-        6. AI score the survivors -> "loves this" / "worth a look" / skip
-        7. Pick today's quote (avoids repeats, learns from her thumbs)
-        8. Render the email
-        9. Send via Resend
-       10. Commit updated state files back to the repo
+SHARED SCRAPE (once per day, 06:00 UTC via GitHub Actions)
+  -> hit every company in companies/insurance-uk.json
+  -> cache raw postings in state/scrape_cache/
+
+PER-USER LOOP (for each active user in users/*.json)
+  -> read from shared cache
+  -> apply user's date + location filters
+  -> dedup against their seen_jobs
+  -> AI-score against their seniority + role focus
+  -> pick their motivational quote (per-user tone weights)
+  -> render and send their email
+  -> commit updated state back to repo
 ```
 
-State (which jobs we've already shown her, which quotes we've already used, which roles she's flagged "not a match") lives in `state/*.json` and is committed back to the repo at the end of every run, so memory persists even though GitHub Actions runners are stateless.
+The AI scoring is the single source of truth for relevance. There are no regex blacklists — the AI judges each posting against the user's seniority bracket and role focus.
 
-## What you need
+## Architecture
 
-- A GitHub account (you already have one).
-- The Resend API key (already saved in `.env` locally).
-- The Anthropic API key (already saved in `.env` locally).
-- About 10 minutes for the one-time setup below.
+```
+job-tracker/
+├── companies/
+│   └── insurance-uk.json         # 32 companies + their careers ATS
+├── users/
+│   └── lucy.json                 # one file per user (config)
+├── state/
+│   ├── scrape_cache/             # shared per-company cache
+│   └── users/{user_id}/          # per-user dedup + feedback + quote history
+├── lib/
+│   ├── catalog.py                # load company catalogs
+│   ├── user.py                   # load + validate user configs
+│   ├── state.py                  # per-user state, shared scrape cache
+│   ├── scorer.py                 # AI relevance (parameterised per user)
+│   ├── filter.py                 # date + location filters
+│   ├── quotes.py                 # per-user quote picker
+│   ├── render.py                 # email rendering
+│   └── emailer.py                # Resend send
+├── scrapers/                     # adaptors per ATS (Workday/SmartRecruiters/etc.)
+├── templates/email.html          # email template
+├── docs/index.html               # GitHub Pages signup form
+├── scripts/add_user.sh           # interactive helper to add a user
+├── .github/workflows/daily.yml   # daily cron
+├── main.py                       # orchestrator
+└── requirements.txt
+```
 
-Lucy does **not** need a GitHub account. She just receives email.
+## One-time setup (for Ian)
 
-## One-time setup
+This is everything you need to do once. After this, adding a new user is one paste away.
 
-### 1. Create a private repo
+### 1. Set up Formspree (for the signup form)
 
-On github.com, create a new **private** repository called `lucy-job-tracker` (or whatever you like). Don't add a README, .gitignore, or licence on the GitHub side - we'll push everything from here.
+Go to [formspree.io](https://formspree.io), sign up for a free account, and create a new form (any project name).
 
-### 2. Push this folder to it
+Copy the form's endpoint URL — it looks like `https://formspree.io/f/xyzabc123`.
 
-From inside this `lucy_job_tracker` folder, in a terminal:
+Open `docs/index.html` in this repo, find the line `action="YOUR_FORMSPREE_ENDPOINT"`, and replace `YOUR_FORMSPREE_ENDPOINT` with that URL.
+
+Commit and push:
 
 ```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin git@github.com:YOUR-USERNAME/lucy-job-tracker.git
-git push -u origin main
+git add docs/index.html && git commit -m "Wire up Formspree endpoint" && git push
 ```
 
-Note: `.env` is gitignored, so your API keys are **not** uploaded. We add them to GitHub separately as secrets.
+Formspree will email you (`ioflaherty65@googlemail.com`) every time someone submits the form.
 
-### 3. Add the secrets
+### 2. Enable GitHub Pages
 
-On the repo page, go to **Settings -> Secrets and variables -> Actions -> New repository secret** and add each of these:
+On the repo page, go to **Settings → Pages**.
 
-| Secret name | Value |
-|---|---|
-| `RESEND_API_KEY` | `re_U7VCDbRr_...` (from your `.env`) |
-| `ANTHROPIC_API_KEY` | `sk-ant-api03-...` (from your `.env`) |
-| `LUCY_EMAIL` | `lucysitunes1@gmail.com` |
-| `LUCY_NAME` | `Lucy` |
-| `RECIPIENT_EMAIL` | `ioflaherty65@googlemail.com` |
-| `RECIPIENT_NAME` | `Ian` |
+Under "Build and deployment":
+- Source: **Deploy from a branch**
+- Branch: **main**, folder: **/docs**
+- Save
 
-`RECIPIENT_EMAIL` is where her "Not a match" and quote-feedback replies will go - your inbox - so the system can learn from them.
+After a minute, the signup form is live at `https://OFLAIA.github.io/lucy-job-tracker/`. Share that URL with anyone you want to onboard.
 
-### 4. Enable Actions
+### 3. Everything else is already set up from the v1 work
 
-GitHub usually enables Actions automatically on a new repo, but if you see a banner asking you to confirm on the **Actions** tab, click confirm.
+GitHub Actions secrets (`RESEND_API_KEY`, `ANTHROPIC_API_KEY`, `RECIPIENT_EMAIL`) are already in place from when you set up Lucy's tracker. The cron is already running daily. You're good.
 
-### 5. Trigger the first run manually
+## Adding a new user
 
-Go to the **Actions** tab -> **Daily job digest** in the left sidebar -> **Run workflow** -> **Run workflow** (green button).
+When someone submits the signup form, Formspree emails you the submission. Then:
 
-Watch the run. The first time you should see a 14-day backfill - Lucy gets a digest of everything live in the last fortnight. After that, she only sees postings from the last day or so.
-
-If the run goes green and Lucy gets the email, you're done.
-
-### 6. Whitelist the sender in Lucy's Gmail (one-off)
-
-Emails come from `onboarding@resend.dev` (the free Resend default sender). Gmail occasionally puts those in Promotions or Spam on the first delivery.
-
-Ask Lucy to:
-
-1. Check Promotions, Updates, and Spam for the first email.
-2. Open it, click the three-dot menu, **Move to Inbox**.
-3. Click the sender name -> **Add to contacts**.
-4. Optionally, in Gmail Settings -> Filters and Blocked Addresses -> Create a new filter, "From: onboarding@resend.dev" -> Never send to spam, always mark as important.
-
-After that, every morning's digest will land cleanly in her inbox.
-
-## Day-to-day
-
-The job runs itself at 06:00 UTC every day. You don't need to do anything.
-
-### When Lucy clicks "Not a match"
-
-Each job card in the email has a "Not a match" button. It's a `mailto:` link that opens her email composer with a structured subject line like:
-
-```
-[lucy-job-tracker] Not a match: a3f8e9d2c4b1
+```bash
+cd path/to/lucy_job_tracker
+bash scripts/add_user.sh
 ```
 
-For now, those replies arrive in **your** inbox (`ioflaherty65@googlemail.com`). When you see one, drop the job id (the bit after the colon) into `state/feedback.json` under `rejected_jobs[].id` along with a short reason, commit, and push. Next morning's run will use that as a negative example for the AI scorer.
+It'll prompt you for each field. Paste them from the Formspree email. The script:
 
-A future v2 can wire this up to Resend's inbound webhook so it happens automatically. Not needed for v1.
+1. Creates `users/{first-name}.json` with the right shape
+2. Validates the config
+3. Commits, pulls, pushes
+4. Optionally triggers a workflow run so they get their first email today
 
-### When Lucy gives a quote thumbs up or down
+Their first email will be a 14-day backfill of currently-live roles. Every morning after that they get the new openings from the last day or so.
 
-Same idea - `mailto:` link, structured subject, lands in your inbox. The id is in the subject. Open `state/feedback.json` -> `quote_thumbs[]` and append:
+## Pausing or stopping a user
+
+For v1 this is manual. Open `users/{name}.json` and either:
+
+- Set `"active": false` to stop emails entirely, or
+- Set `"paused_until": "2026-06-15"` to pause until that date (resumes automatically)
+
+Commit and push. Next morning's run will skip them.
+
+## When Lucy (or anyone) clicks "Not a match"
+
+Each job card has a "Not a match" button. It's a `mailto:` link that lands a reply in your inbox with a structured subject:
+
+```
+[job-tracker] Not a match: a3f8e9d2c4b1
+```
+
+For v1 this is manual. Open `state/users/{user_id}/feedback.json` and append to `rejected_jobs`:
 
 ```json
-{ "id": "rooseveltdoonething", "verdict": "up" }
+{ "id": "a3f8e9d2c4b1", "title": "Job title", "company": "Company", "reason": "why not" }
 ```
 
-Or just nudge the `tone_weights` directly - e.g. if Lucy keeps thumbing up the "gentle" quotes and thumbing down "sharp", bump `gentle` to `2.0` and drop `sharp` to `0.5`. The picker re-weights randomly each morning from those values.
+Commit and push. Next morning's run feeds the last 8 rejections into the AI prompt so it learns the pattern.
 
-### If a careers page changes shape
+(A v2 nice-to-have: wire up Resend's inbound webhook to automate this. Not needed at friends-and-family scale.)
 
-The 12 scrapers are educated guesses based on which platforms each company appears to use. If one starts returning zero jobs day after day while the others find postings, the company has probably moved platforms.
+## Adding a new industry or region
 
-Open `config/companies.json`, find the offending entry, and:
+To add (for example) Insurance US:
 
-- Try a different `adaptor` (`workday`, `smartrecruiters`, `successfactors`, or `custom`).
-- For workday, the `tenant`, `wd_domain`, and `site` fields need to match what's in the careers page URL.
-- For smartrecruiters, the `slug` matches the company's URL on jobs.smartrecruiters.com.
-- The `custom` adaptor is the fallback - it scrapes anchors that look like job titles.
+1. Create `companies/insurance-us.json` with the same shape as the UK one.
+2. Update `docs/index.html` to expose **United States** as a region option (and adjust the locations multi-select).
 
-Bump the `verified: false` flag to `true` once you've confirmed it works.
+The pipeline picks up `companies/*.json` automatically — no code change needed.
 
-## Running locally (optional)
+## What changed from v1 (Lucy's single-user setup)
 
-If you want to test changes without burning a real email:
+- `config/companies.json` → `companies/insurance-uk.json` (catalog grew from 12 → 32)
+- `config/roles.json` → per-user role focus in `users/{id}.json` (no global roles config)
+- `state/*.json` → `state/users/{id}/*.json` (per-user) and `state/scrape_cache/` (shared)
+- `main.py` rewritten: scrape once, loop over active users
+- AI scorer prompt now takes name, industry, seniority, locations, role_focus as parameters
+- Email subject line generic ("N new insurance roles today" → "N new roles today") — though for v1 we keep the "insurance" hardcode since there's only one industry
+- Set Aside section removed entirely (AI is the only judge; "skip" means dropped silently)
+- GitHub Pages signup form added at `docs/index.html`
+
+Lucy's existing seen_jobs and feedback are preserved at `state/users/lucy/`.
+
+## Local development
 
 ```bash
 pip install -r requirements.txt
+
+# Full real run (will scrape and send emails)
+python main.py
+
+# Render but don't send - preview HTML written to /tmp/digest_preview_{user_id}.html
 python main.py --dry
-```
 
-`--dry` skips the Resend send and writes the rendered email to `/tmp/lucy_digest_preview.html` instead. Open that in your browser to see what would have been sent.
+# Process just one user
+python main.py --only-user lucy --dry
 
-## File map
-
-```
-lucy_job_tracker/
-├── .github/workflows/daily.yml   GitHub Actions cron
-├── config/
-│   ├── companies.json            12 companies + their careers system
-│   ├── roles.json                Target roles, locations, hard exclusions
-│   └── quotes.json               125 motivational quotes
-├── lib/
-│   ├── state.py                  Persists seen jobs, feedback, quote history
-│   ├── filter.py                 Date / location / hard-exclusion filters
-│   ├── scorer.py                 AI relevance scoring (Anthropic)
-│   ├── quotes.py                 Tone-weighted quote picker
-│   ├── render.py                 Email rendering (Jinja2)
-│   └── emailer.py                Resend send
-├── scrapers/
-│   ├── workday.py                Workday cxs JSON API adaptor
-│   ├── smartrecruiters.py        SmartRecruiters public API adaptor
-│   ├── successfactors.py         SuccessFactors HTML adaptor
-│   └── custom.py                 BeautifulSoup fallback
-├── templates/email.html          Email template (table-based, Gmail-safe)
-├── state/                        Memory between runs (committed back)
-├── main.py                       Orchestrator
-├── requirements.txt
-└── .env                          Local dev secrets (gitignored)
+# Skip the scrape, reuse existing cache (fast iteration)
+python main.py --only-user lucy --skip-scrape --dry
 ```
 
 ## Troubleshooting
 
-**The Action ran but Lucy didn't get an email.**
-Check the Action logs. If it says "RESEND_API_KEY not set" or similar, the secret isn't named exactly right - re-add it. If it ran cleanly but no email arrived, check Lucy's spam/promotions folder first.
+**Action ran but nobody got an email.**
+Check the Action logs for errors. Most likely cause: `RESEND_API_KEY` or `ANTHROPIC_API_KEY` not set, or a recipient email is malformed in a user config.
 
-**Every company is "couldn't reach".**
-Probably a transient network hiccup on the runner. Re-trigger the workflow manually. If it persists, one of the careers platforms may be down or rate-limiting GitHub's IP range; try again in a few hours.
+**Same company shows "Couldn't reach" every day.**
+The scraper for that company needs work. Open `companies/insurance-uk.json`, find the entry, try a different `adaptor` value (`workday` / `smartrecruiters` / `successfactors` / `custom`). For Workday, verify the `tenant` and `wd_domain` match the careers page URL.
 
-**Same jobs keep appearing every day.**
-The dedup is keyed on the job URL. If a company changes their URL scheme on every refresh (some do), edit `lib/state.py::job_id` to hash on `(company, title)` instead of URL.
+**A user wants a location we don't expose in the signup form.**
+Edit `docs/index.html` to add the option. Existing users can also be edited directly in `users/{id}.json` to add custom locations.
 
-**The AI is sending too many "worth a look" matches that aren't right.**
-Add a few of the bad ones to `state/feedback.json` under `rejected_jobs` with the title + reason. The scorer feeds the last 8 rejections into the prompt as negative examples.
+**The cron isn't firing.**
+GitHub disables scheduled workflows on inactive repos (no commits for 60 days). The state-commit step on every successful run keeps the repo "active" — so this only happens if the workflow has been broken for 2 months. Reactivate by manually triggering once from the Actions tab.
 
-**The 7am-vs-8am thing.**
-The cron is `0 6 * * *` UTC. In British Summer Time (late March to late October) that's 7am UK. In Greenwich Mean Time (winter) it lands at 6am UK. Most of the year is BST. If you want it nailed to 7am year-round, you'd need a self-hosted scheduler that knows about UK timezone rules.
+**Cost going up?**
+Anthropic API cost scales with number of unique postings × number of users. Check `state/scrape_cache/*.json` — if some companies are returning hundreds of postings (because the date filter is letting too many through), tighten the lookback in `main.py` (currently 14 days first run, 2 days ongoing).
 
-## What's not in v1
+## What's not in this version
 
-- Automatic processing of "Not a match" / quote feedback replies (currently manual).
-- A CV-fit signal (you asked to leave that out for now).
-- SMS or WhatsApp delivery.
+- Automatic processing of feedback replies (currently manual).
+- A user dashboard for self-service config changes (currently you edit `users/{id}.json`).
+- More industries — only Insurance UK is wired up.
+- A real sender domain — uses `onboarding@resend.dev` so users need to whitelist it once.
+- Per-user send times in different timezones — everyone gets 06:00 UTC = 07:00 UK in BST.
 
-These are all reasonable v2 additions. The architecture supports them; nothing in v1 needs ripping up.
+All reasonable v2 additions. None blocking for friends-and-family use.

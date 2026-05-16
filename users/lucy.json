@@ -1,0 +1,38 @@
+{
+  "id": "lucy",
+  "name": "Lucy",
+  "email": "lucysitunes1@gmail.com",
+  "industry": "insurance",
+  "region": "uk",
+  "locations": [
+    "London",
+    "Greater London",
+    "City of London",
+    "Essex",
+    "Chelmsford",
+    "Romford",
+    "Ilford",
+    "Brentwood",
+    "Basildon",
+    "Southend",
+    "Hybrid - London",
+    "Remote - UK"
+  ],
+  "exclude_locations": [
+    "United States",
+    "USA",
+    "Singapore",
+    "Hong Kong",
+    "Bermuda",
+    "Dublin",
+    "Edinburgh",
+    "Manchester",
+    "Birmingham",
+    "Glasgow"
+  ],
+  "seniority": "school_leaver",
+  "role_focus": "underwriting, broking, claims, operations, account handling",
+  "active": true,
+  "paused_until": null,
+  "created_at": "2026-05-01T20:00:00Z"
+}
