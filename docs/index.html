@@ -3,11 +3,11 @@
   Signup form for the daily job digest.
   Hosted on GitHub Pages directly from /docs in the main branch.
 
-  Form action is intentionally a placeholder ('YOUR_FORMSPREE_ENDPOINT'). To
+  Form action is intentionally a placeholder ('https://formspree.io/f/mlgzqvdj'). To
   make this live:
     1. Sign up at https://formspree.io (free tier = 50 submissions/month).
     2. Create a new form, copy its endpoint URL (looks like https://formspree.io/f/xyzabc123).
-    3. Replace 'YOUR_FORMSPREE_ENDPOINT' below with that URL.
+    3. Replace 'https://formspree.io/f/mlgzqvdj' below with that URL.
 
   Aesthetic deliberately matches the daily digest email - same coral / cream
   palette, Georgia serif accents, Arial sans body. No external fonts or JS
@@ -206,7 +206,7 @@
     <p class="subhead">Tell us where you live and what level of role you're after. Every weekday at 7am, you'll get a short email with the live openings that fit - from a curated list of UK insurance employers.</p>
   </div>
 
-  <form id="signup-form" action="YOUR_FORMSPREE_ENDPOINT" method="POST">
+  <form id="signup-form" action="https://formspree.io/f/mlgzqvdj" method="POST">
 
     <fieldset>
       <legend>About you</legend>
@@ -296,7 +296,7 @@
   // is disabled or the form has no Formspree endpoint configured yet.
   document.getElementById('signup-form').addEventListener('submit', function(e) {
     var form = e.target;
-    if (form.action.indexOf('YOUR_FORMSPREE_ENDPOINT') !== -1) {
+    if (form.action.indexOf('https://formspree.io/f/mlgzqvdj') !== -1) {
       // Not configured yet - let it submit normally so the user sees the error.
       return;
     }
