@@ -51,6 +51,7 @@ read_default "Email address" EMAIL
 read_default "Locations (comma-separated, e.g. 'London,Essex,Remote - UK')" LOCATIONS "London"
 read_default "Seniority (school_leaver|graduate|junior|mid|senior)" SENIORITY "school_leaver"
 read_default "Role focus (optional, plain English)" ROLE_FOCUS ""
+read_default "Companies (comma-separated shorts, or 'all' for default)" COMPANIES "all"
 
 # ── derive the user id from the first name ──────────────────────────────────
 SLUG=$(echo "$FIRST_NAME" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9' '-' | sed 's/-*$//' | sed 's/^-*//')
@@ -72,6 +73,18 @@ parts = [p.strip() for p in '''$LOCATIONS'''.split(',') if p.strip()]
 print(json.dumps(parts))
 ")
 
+# ── companies: 'all' (default) or a comma-separated list ────────────────────
+COMPANIES_LOWER=$(echo "$COMPANIES" | tr '[:upper:]' '[:lower:]')
+if [[ "$COMPANIES_LOWER" == "all" || -z "$COMPANIES" ]]; then
+  COMPANIES_JSON="null"
+else
+  COMPANIES_JSON=$(python3 -c "
+import json, sys
+parts = [p.strip() for p in '''$COMPANIES'''.split(',') if p.strip()]
+print(json.dumps(parts))
+")
+fi
+
 CREATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 # ── write the user file ─────────────────────────────────────────────────────
@@ -87,6 +100,7 @@ cat > "$USER_FILE" <<EOF
   "exclude_locations": [],
   "seniority": "$SENIORITY",
   "role_focus": $(python3 -c "import json,sys; print(json.dumps('''$ROLE_FOCUS'''))"),
+  "companies": $COMPANIES_JSON,
   "active": true,
   "paused_until": null,
   "created_at": "$CREATED_AT"

@@ -185,6 +185,46 @@
     color: #712B13;
     margin-top: 12px;
   }
+  /* Company picker */
+  .co-action {
+    padding: 6px 12px;
+    font-family: inherit;
+    font-size: 12px;
+    color: #72243E;
+    background: #ffffff;
+    border: 1px solid #D4537E;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.12s ease;
+  }
+  .co-action:hover { background: #FBEAF0; }
+  .co-group {
+    margin: 12px 0 4px;
+    color: #72243E;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+  .co-group:first-of-type { margin-top: 0; }
+  .co-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px 12px;
+    font-size: 13px;
+    color: #444441;
+  }
+  .co-list label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 2px 0;
+  }
+  .co-list label:hover { color: #72243E; }
+  .co-list input { margin-right: 6px; accent-color: #D4537E; }
+  @media (max-width: 480px) {
+    .co-list { grid-template-columns: 1fr; }
+  }
   @media (max-width: 480px) {
     body { padding: 12px 8px; }
     .header { padding: 24px 20px 20px; }
@@ -227,8 +267,71 @@
         <span class="label-text">Industry</span>
         <div class="industry-readonly">
           Insurance (UK)
-          <small>More industries coming soon. For now we cover ~30 UK insurance employers - brokers, composite insurers, Lloyd's syndicates, reinsurers.</small>
+          <small>We monitor 32 UK insurance employers. By default you get all of them - click below to customise.</small>
         </div>
+        <details style="margin-top: 10px; font-size: 13px;" id="co-picker">
+          <summary style="cursor: pointer; color: #72243E; padding: 6px 0; font-weight: 600;">Customise which companies to monitor</summary>
+          <div style="margin-top: 8px; padding: 14px 16px; background: #FAECE7; border-radius: 8px;">
+            <div style="margin-bottom: 12px; display: flex; gap: 8px;">
+              <button type="button" class="co-action" data-action="all">Select all</button>
+              <button type="button" class="co-action" data-action="none">Clear all</button>
+            </div>
+
+            <p class="co-group">Brokers</p>
+            <div class="co-list">
+              <label><input type="checkbox" name="companies" value="WTW" checked> Willis Towers Watson</label>
+              <label><input type="checkbox" name="companies" value="Gallagher" checked> Gallagher</label>
+              <label><input type="checkbox" name="companies" value="Marsh" checked> Marsh</label>
+              <label><input type="checkbox" name="companies" value="AON" checked> AON</label>
+              <label><input type="checkbox" name="companies" value="Lockton" checked> Lockton</label>
+              <label><input type="checkbox" name="companies" value="Howden" checked> Howden</label>
+              <label><input type="checkbox" name="companies" value="Miller" checked> Miller Insurance</label>
+            </div>
+
+            <p class="co-group">Composite insurers</p>
+            <div class="co-list">
+              <label><input type="checkbox" name="companies" value="Aviva" checked> Aviva</label>
+              <label><input type="checkbox" name="companies" value="AXA" checked> AXA UK</label>
+              <label><input type="checkbox" name="companies" value="Zurich" checked> Zurich UK</label>
+              <label><input type="checkbox" name="companies" value="Allianz" checked> Allianz UK</label>
+              <label><input type="checkbox" name="companies" value="RSA" checked> RSA Insurance</label>
+              <label><input type="checkbox" name="companies" value="QBE" checked> QBE UK</label>
+              <label><input type="checkbox" name="companies" value="Chubb" checked> Chubb</label>
+              <label><input type="checkbox" name="companies" value="AIG" checked> AIG UK</label>
+            </div>
+
+            <p class="co-group">Lloyd's market</p>
+            <div class="co-list">
+              <label><input type="checkbox" name="companies" value="Beazley" checked> Beazley</label>
+              <label><input type="checkbox" name="companies" value="Hiscox" checked> Hiscox</label>
+              <label><input type="checkbox" name="companies" value="Lancashire" checked> Lancashire Insurance</label>
+              <label><input type="checkbox" name="companies" value="Brit" checked> Brit Insurance</label>
+              <label><input type="checkbox" name="companies" value="Talbot" checked> Talbot Underwriting</label>
+              <label><input type="checkbox" name="companies" value="Apollo" checked> Apollo Underwriting</label>
+              <label><input type="checkbox" name="companies" value="Convex" checked> Convex Insurance</label>
+              <label><input type="checkbox" name="companies" value="Liberty" checked> Liberty Specialty Markets</label>
+              <label><input type="checkbox" name="companies" value="Asta" checked> Asta Managing Agency</label>
+              <label><input type="checkbox" name="companies" value="Lloyd's" checked> Lloyd's of London (Corporation)</label>
+            </div>
+
+            <p class="co-group">Reinsurance</p>
+            <div class="co-list">
+              <label><input type="checkbox" name="companies" value="SCOR" checked> SCOR</label>
+              <label><input type="checkbox" name="companies" value="Munich Re" checked> Munich Re UK</label>
+              <label><input type="checkbox" name="companies" value="Swiss Re" checked> Swiss Re UK</label>
+            </div>
+
+            <p class="co-group">Consumer / direct</p>
+            <div class="co-list">
+              <label><input type="checkbox" name="companies" value="Direct Line" checked> Direct Line Group</label>
+              <label><input type="checkbox" name="companies" value="Admiral" checked> Admiral Group</label>
+              <label><input type="checkbox" name="companies" value="Aegon" checked> Aegon UK</label>
+              <label><input type="checkbox" name="companies" value="NFU Mutual" checked> NFU Mutual</label>
+            </div>
+
+            <p style="margin: 12px 0 0; font-size: 12px; color: #888780; font-style: italic;">If you leave them all selected, that's the default. The AI scoring still filters down to roles that match your seniority and locations.</p>
+          </div>
+        </details>
         <input type="hidden" name="industry" value="insurance">
         <input type="hidden" name="region" value="uk">
       </label>
@@ -291,6 +394,16 @@
 </div>
 
 <script>
+  // Select all / Clear all for the company picker.
+  document.querySelectorAll('#co-picker .co-action').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var checked = btn.dataset.action === 'all';
+      document.querySelectorAll('#co-picker input[name="companies"]').forEach(function(cb) {
+        cb.checked = checked;
+      });
+    });
+  });
+
   // Intercept submit to show the inline thanks message instead of bouncing
   // through Formspree's default redirect. Falls back to normal POST if JS
   // is disabled or the form has no Formspree endpoint configured yet.

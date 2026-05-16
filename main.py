@@ -114,6 +114,18 @@ def process_user(user_cfg: dict, dry: bool = False) -> int:
 
     # 1. Pull from shared cache
     jobs_by_short, reached, unreachable = load_cached_scrape(industry, region)
+
+    # Optional per-user company selection. If 'companies' is missing or empty,
+    # treat as 'monitor all' (the default for users who don't customise).
+    user_companies = user_cfg.get("companies")
+    if user_companies:
+        before = len(jobs_by_short)
+        jobs_by_short = {s: js for s, js in jobs_by_short.items() if s in user_companies}
+        reached = [s for s in reached if s in user_companies]
+        unreachable = [s for s in unreachable if s in user_companies]
+        LOG.info("[%s] company filter: %d/%d companies selected",
+                 user_id, len(jobs_by_short), before)
+
     all_jobs = [j for jobs in jobs_by_short.values() for j in jobs]
     LOG.info("[%s] cache has %d raw postings from %d/%d companies",
              user_id, len(all_jobs), len(reached), len(reached) + len(unreachable))
