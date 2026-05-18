@@ -1,0 +1,15 @@
+{
+  "id": "jack-2",
+  "name": "Jack",
+  "email": "ioflaherty@yahoo.co.uk",
+  "industry": "insurance",
+  "region": "uk",
+  "locations": ["London"],
+  "exclude_locations": [],
+  "seniority": "junior",
+  "role_focus": "i am looking for underwriting roles primarily in property esecially us property but open to other areas",
+  "companies": null,
+  "active": true,
+  "paused_until": null,
+  "created_at": "2026-05-18T21:28:04Z"
+}
